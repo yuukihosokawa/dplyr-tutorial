@@ -1,0 +1,48 @@
+---
+title: "Worked example of dplyr package in R"
+author: "Yuuki Hosokawa"
+date: "21/4/2021"
+output: html_document
+---
+
+```{r}
+# Loads the dplyr packages
+library(dplyr)
+# If you haven't loaded the package before use:
+# install.packages("dplyr")
+
+# Loads example data of motor trend car road tests from 1974 Motor Trend US magazine
+data(mtcars)
+# Prints the content of mtcars data set for a fast visual of contents
+head(mtcars)
+
+# To subset the horsepower column we use the select function
+#select(.data, ...) takes a data frame argument and variable names (...) to select a range of variables 
+select(mtcars, hp)
+# If we want to subset 3 columns we would supply 3 variables. In this case we only want to show the horsepower,miles per gallon and weight.
+select(mtcars, hp, mpg, wt)
+
+# If we want to subset specific rows, we use filter(.data, ...) and it returns the variables that satisfies the condition. In this case we select cars with horsepower more than 100 and the weight variable is less than 3.
+filter(mtcars, hp > 100, wt < 3)
+
+# We can arrange the cars by weight in ascending order using the arrange(.data, ...) function
+arrange(mtcars, wt)
+
+# summarize(.data, ...) is useful for generating summary statistics that can be given with any variables. 
+# If we want the average, minimum, maximum, median and interquartile range summary statistics for one variable (horsepower) we use:
+summarise(mtcars, avg_hp = mean(hp), min_hp = min(hp),
+          max_hp = max(hp), med_hp = median(hp), IQG_hp = IQR(hp))
+
+# We can use the summarise function call to apply to a subset (grouped) data instead of the whole mtcars dataset
+# Creating a group data of car gears using group_by() and then summarise() on this group gives the summary statistics of the group
+mtcars_gears <- group_by(mtcars, gear)
+
+# Another way to do this is using the pipe operator %>% which takes the first argument and passes it to the second function as the first argument
+mtcars %>% group_by(gear)
+
+# We can use the pipe operator to easily get a statistic for a group. For example, to return the average weight for the gears group:
+mtcars %>% group_by(gear) %>% summarise(average_wt = mean(wt))
+
+# Using these useful functions and the dplyr package allows for easier data manipulation and readability. 
+```
+
